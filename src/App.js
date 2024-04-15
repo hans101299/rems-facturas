@@ -5,6 +5,7 @@ const App = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedOption, setSelectedOption] = useState('');
   const options = [
+    {edificio: "PRUEBA", correo: "aracely.chavez@rems.pe"},
     {edificio: "TORRE SIGLO XXI", correo: "Bruno.Rossi@rems.pe"},
 {edificio: "TORRE PARQUE MAR", correo: "Patricia.Morel@rems.pe"},
 {edificio: "EDIFICIO NACIONAL", correo: "Marani.Rios@rems.pe"},
@@ -98,9 +99,10 @@ const App = () => {
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      formData.append('option', selectedOption);
+      formData.append('option', selectedOption.split("-")[1]);
+      formData.append('email', selectedOption.split("-")[0]);
   
-      const response = await fetch('http://localhost:5000/upload', {
+      const response = await fetch('http://164.68.101.193:5001/upload', {
         method: 'POST',
         body: formData,
       });
@@ -146,7 +148,7 @@ const App = () => {
           >
             <option value="">Selecciona una opción...</option>
             {options.map((option, index) => (
-              <option key={index} value={option.correo}>
+              <option key={index} value={option.correo + "-" + option.edificio}>
                 {option.edificio}
               </option>
             ))}
