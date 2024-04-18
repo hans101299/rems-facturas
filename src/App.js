@@ -11,6 +11,8 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const options = [
     {edificio: "PRUEBA", correo: "aracely.chavez@rems.pe"},
+    {edificio: "PRUEBA VIOLETA", correo: "contabilidad.facturacion1@rems.pe"},
+    {edificio: "PRUEBA MARCOS", correo: "contabilidad.facturacion2@rems.pe"},
     {edificio: "TORRE SIGLO XXI", correo: "Bruno.Rossi@rems.pe"},
     {edificio: "TORRE PARQUE MAR", correo: "Patricia.Morel@rems.pe"},
     {edificio: "EDIFICIO NACIONAL", correo: "Marani.Rios@rems.pe"},
