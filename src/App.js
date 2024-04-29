@@ -197,7 +197,7 @@ const App = () => {
           >
             {loading ? "Cargando..." : "Enviar"}
           </button>
-          {isOK && <p className='font-bold text-green-700'>Se subió correctamente el archivo.</p>}
+          {isOK && <p className='font-bold text-green-700'>Se ha enviado el correo exitosamente.</p>}
           {isERROR && <p className='font-bold text-red-700'>Hubo un error.</p>}
         </div>
       </form>
