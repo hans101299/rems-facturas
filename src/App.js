@@ -8,7 +8,10 @@ const App = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOK, setIsOK] = useState(false);
   const [isERROR, setIsERROR] = useState(false);
+  const [isFileERROR, setIsFileERROR] = useState(false);
+  const [messageERROR, setMessageERROR] = useState('');
   const [loading, setLoading] = useState(false);
+  const [files, setFiles] = useState([]);
   const options = [
     {edificio: "PRUEBA", correo: "aracely.chavez@rems.pe"},
     {edificio: "PRUEBA VIOLETA", correo: "contabilidad.facturacion1@rems.pe"},
@@ -96,6 +99,25 @@ const App = () => {
     setSelectedFile(event.target.files[0]);
   };
 
+  const handleFilesChange = (event) => {
+    const selectedFiles = Array.from(event.target.files);
+    const maxSize = 20 * 1024 * 1024; // 20 MB en bytes
+
+    const validFiles = [];
+    for (let file of selectedFiles) {
+      if (file.size <= maxSize) {
+        validFiles.push(file);
+      } else {
+        setMessageERROR(`El archivo ${file.name} excede el tamaño máximo de 20 MB.`);
+        setIsFileERROR(true);
+        return;
+      }
+    }
+
+    setFiles(validFiles);
+    setIsFileERROR(false);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
   
@@ -105,11 +127,19 @@ const App = () => {
       setLoading(true);
 
       const formData = new FormData();
+
+      for (let i = 0; i < files.length; i++) {
+        formData.append('filesExtra', files[i]);
+      }
+
       formData.append('file', selectedFile);
       formData.append('option', selectedOption.split("-")[1]);
       formData.append('email', selectedOption.split("-")[0]);
   
-      const response = await fetch('http://164.68.101.193:5001/upload', {
+      const response = await fetch(
+        'http://164.68.101.193:5001/upload'
+        //'http://localhost:5001/upload'
+        , {
         method: 'POST',
         body: formData,
       });
@@ -188,17 +218,31 @@ const App = () => {
             </div>
           )}
         </div>
+        <div className="mb-4">
+          <label htmlFor="files" className="block text-gray-700 font-bold mb-2">
+            Selecciona uno o varios archivos que se adjuntaran al correo:
+          </label>
+          <input
+            type="file"
+            id="files"
+            name="files"
+            onChange={handleFilesChange}
+            multiple
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          />
+        </div>
         <div className="flex flex-col items-center justify-center">
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline
             disabled:opacity-75 disabled:bg-gray-200 disabled:text-black"
-            disabled={loading}
+            disabled={isFileERROR || loading}
           >
             {loading ? "Cargando..." : "Enviar"}
           </button>
           {isOK && <p className='font-bold text-green-700'>Se ha enviado el correo exitosamente.</p>}
           {isERROR && <p className='font-bold text-red-700'>Hubo un error.</p>}
+          {isFileERROR && <p className='font-bold text-red-700'>{messageERROR}</p>}
         </div>
       </form>
     </div>
